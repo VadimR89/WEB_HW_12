@@ -21,7 +21,7 @@ async def get_contacts(limit: int = Query(10, ge=10, le=500), offset: int = Quer
     return contacts
 
 
-@router.get("/")
+@router.get("/", response_model=ContactResponse)
 async def get_contact(
         contact_id: int = Query(None),
         first_name: str = Query(None),
@@ -34,7 +34,7 @@ async def get_contact(
             first_name=first_name,
             last_name=last_name,
             email=email,
-            db=db
+            db=db,
         )
     else:
         contact = await repositories_contacts.get_contacts(contact_id, db)
@@ -46,14 +46,16 @@ async def get_contact(
 
 
 @router.post("/", response_model=ContactResponse, status_code=status.HTTP_201_CREATED)
-async def create_contact(body: ContactSchema, db: AsyncSession = Depends(get_db)):
-    contact = await repositories_contacts.create_contact(body, db)
+async def create_contact(body: ContactSchema, db: AsyncSession = Depends(get_db),
+                         user: User = Depends(auth_service.get_current_user)):
+    contact = await repositories_contacts.create_contact(body, db, user)
     return contact
 
 
 @router.put("/{contact_id}")
-async def update_contact(body: ContactUpdateSchema, contact_id: int = Path(ge=1), db: AsyncSession = Depends(get_db)):
-    contact = await repositories_contacts.update_contact(contact_id, body, db)
+async def update_contact(body: ContactUpdateSchema, contact_id: int = Path(ge=1), db: AsyncSession = Depends(get_db),
+                         user: User = Depends(auth_service.get_current_user)):
+    contact = await repositories_contacts.update_contact(contact_id, body, db, user)
     return contact
 
 

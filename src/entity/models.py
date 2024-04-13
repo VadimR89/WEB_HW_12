@@ -1,7 +1,7 @@
 import enum
 from datetime import date
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, DateTime, func, Enum
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import String, Integer, ForeignKey, DateTime, func, Enum, Boolean
 from sqlalchemy.orm import DeclarativeBase
 
 
@@ -18,6 +18,8 @@ class Contact(Base):
     phone_number: Mapped[str] = mapped_column(String(12))
     born_date: Mapped[str] = mapped_column(String(20))
     completed: Mapped[bool] = mapped_column(default=False)
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey('users.id'), nullable=True)
+    user: Mapped['User'] = relationship('User', backref='todos', lazy='joined')
 
 
 class Role(enum.Enum):
@@ -36,4 +38,5 @@ class User(Base):
     refresh_token: Mapped[str] = mapped_column(String(255), nullable=True)
     created_at: Mapped[date] = mapped_column('created_at', DateTime, default=func.now())
     updated_at: Mapped[date] = mapped_column('updated_at', DateTime, default=func.now(), onupdate=func.now())
-    role: Mapped[Enum] = mapped_column('role', Enum(Role), default=Role.user, nullable=True)
+    role: Mapped[Enum] = mapped_column('role', Enum(Role), default=Role.user, nullable=False)
+    confirmed: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verify email</title>
+</head>
+<body>
+<p>Hi {{fullname}},</p>
+<p>Thank you for signing up for our service.</p>
+<p>Please click the following link to verify your email address:</p>
+<p>
+    <a href="{{host}}api/auth/confirmed_email/{{token}}">
+        Verification
+    </a>
+    <img src="http://127.0.0.1:8000/static/open_check.png" alt="">
+    <img src="http://127.0.0.1:8000/api/auth/{{username}}" alt="">
+</p>
+<p>Thanks,</p>
+<p>The Our Team</p>
+</body>
+</html>
