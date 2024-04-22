@@ -31,6 +31,14 @@ test_user = {
 
 @pytest.fixture(scope="module", autouse=True)
 def init_models_wrap():
+        """
+The init_models_wrap function is a wrapper function that allows us to run the init_models function
+synchronously. This is necessary because we need to initialize our database before running any tests, and
+the pytest-asyncio plugin does not allow for synchronous code in test functions.
+
+:return: The init_models function
+:doc-author: Trelent
+"""
     async def init_models():
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
